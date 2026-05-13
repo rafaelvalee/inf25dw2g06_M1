@@ -1,36 +1,59 @@
 openapi: 3.0.0
 info:
   title: Task Manager API
-  description: API para Gestão de Tarefas com OAuth 2.0
+  description: API task manager.
   version: 1.0.0
 servers:
   - url: http://localhost:3000/api
+    description: Servidor Local (Docker)
+
 paths:
   /projects:
     get:
-      summary: Listar Projetos
+      tags:
+        - Projetos
+      summary: Listar todos os meus projetos
       responses:
         '200':
-          description: Sucesso
+          description: Lista de projetos devolvida com sucesso.
     post:
-      summary: Criar Projeto
+      tags:
+        - Projetos
+      summary: Criar um projeto novo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
       responses:
         '201':
-          description: Criado
+          description: Projeto criado.
+
   /projects/{id}:
     put:
-      summary: Atualizar Projeto
+      tags:
+        - Projetos
+      summary: Atualizar um projeto existente
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
       responses:
         '200':
-          description: Atualizado
+          description: Projeto atualizado.
     delete:
-      summary: Apagar Projeto
+      tags:
+        - Projetos
+      summary: Eliminar um projeto
       parameters:
         - in: path
           name: id
@@ -39,32 +62,54 @@ paths:
             type: integer
       responses:
         '200':
-          description: Apagado
+          description: Projeto apagado.
+
   /tasks:
     get:
-      summary: Listar Tarefas
+      tags:
+        - Tarefas
+      summary: Listar todas as tarefas
       responses:
         '200':
-          description: Sucesso
+          description: Sucesso.
     post:
-      summary: Criar Tarefa
+      tags:
+        - Tarefas
+      summary: Criar uma tarefa nova
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
       responses:
         '201':
-          description: Criada
+          description: Tarefa criada.
+
   /tasks/{id}:
     put:
-      summary: Atualizar Tarefa
+      tags:
+        - Tarefas
+      summary: Atualizar uma tarefa
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
       responses:
         '200':
-          description: Atualizada
+          description: Tarefa atualizada.
     delete:
-      summary: Apagar Tarefa
+      tags:
+        - Tarefas
+      summary: Eliminar uma tarefa
       parameters:
         - in: path
           name: id
@@ -73,10 +118,52 @@ paths:
             type: integer
       responses:
         '200':
-          description: Apagada
+          description: Tarefa apagada.
+
   /users:
     get:
-      summary: Listar Users
+      tags:
+        - Utilizadores
+      summary: Listar utilizadores do sistema
       responses:
         '200':
-          description: Sucesso
+          description: Sucesso.
+
+components:
+  schemas:
+    ProjectInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: "Novo Projeto"
+        description:
+          type: string
+          example: "Descrição detalhada do projeto"
+    
+    TaskInput:
+      type: object
+      required:
+        - title
+        - ProjectId
+      properties:
+        title:
+          type: string
+          example: "Minha primeira tarefa"
+        status:
+          type: string
+          example: "pendente"
+        ProjectId:
+          type: integer
+          example: 1
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: string
+          enum: [pendente, concluída]
